@@ -118,10 +118,10 @@ def main():
                     with open(fixed_file_name, 'w') as the_file:
                         the_file.write(m.source_code)
 
-            print("********")
-            # print(i)#, commit.msg)
-            print(fixed_file_name)
-            print(bug_file_name)
+                    print("********")
+                    print(i, commit.msg.split('\n')[0])
+                    print(fixed_file_name)
+                    print(bug_file_name)
 
 if __name__ == "__main__":
     main()
