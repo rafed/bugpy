@@ -67,18 +67,18 @@ def main():
 
     for commit in commits:
         # print(commit.hash, commit.msg.split('\n')[0])
-        if not valid_commit(commit):
-            continue
-
-        i+=1
-        # if i==250: break
-
-        fixed_files = []
-        for m in commit.modifications:
-            if not valid_modification(m):
+        try:
+            if not valid_commit(commit):
                 continue
+            i+=1
+            # if i==250: break
 
-            try:
+            fixed_files = []
+
+            for m in commit.modifications:
+                if not valid_modification(m):
+                    continue
+
                 bug_commit = gitRepo.get_commits_last_modified_lines(commit, m) ### uses SZZ
 
                 if bug_commit == {}:
@@ -122,10 +122,11 @@ def main():
                         print(i, commit.msg) #.split('\n')[0])
                         print(fixed_file_name)
                         print(bug_file_name)
-            except Exception as e:
-                print(e)
-                print("Continuinf for next commits")
-
+        except Exception as e:
+            print("[***]", e)
+            print("Continuing for next commits")
+        
+    print("All done")
 
 if __name__ == "__main__":
     main()
