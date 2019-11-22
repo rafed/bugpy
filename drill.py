@@ -5,6 +5,7 @@ import os
 import json
 from datetime import datetime
 import pytz
+import traceback
 
 utc=pytz.UTC
 
@@ -118,12 +119,14 @@ def main():
                         with open(fixed_file_name, 'w') as the_file:
                             the_file.write(m.source_code)
 
-                        print("********")
                         print(i, commit.msg) #.split('\n')[0])
                         print(fixed_file_name)
                         print(bug_file_name)
+                        print("********")
+
         except Exception as e:
             print("[***]", e)
+            # print(traceback.format_exc())
             print("Continuing for next commits")
         
     print("All done")
