@@ -54,8 +54,11 @@ def main():
     repo_branch = 'master'
     base_dir_fixed = "data/fixed/{}".format(os.path.basename(os.path.normpath(repo_path)))
     base_dir_bug = "data/bug/{}".format(os.path.basename(os.path.normpath(repo_path)))
-    os.makedirs(base_dir_bug)
-    os.makedirs(base_dir_fixed)
+
+    if not os.path.exists(base_dir_bug):
+        os.makedirs(base_dir_bug)
+    if not os.path.exists(base_dir_fixed):
+        os.makedirs(base_dir_fixed)
 
     gitRepo = GitRepository(repo_path)
     commits = RepositoryMining(repo_path, only_in_branch=repo_branch).traverse_commits()
@@ -75,53 +78,54 @@ def main():
             if not valid_modification(m):
                 continue
 
-            bug_commit = gitRepo.get_commits_last_modified_lines(commit, m) ### uses SZZ
+            try:
+                bug_commit = gitRepo.get_commits_last_modified_lines(commit, m) ### uses SZZ
 
-            if bug_commit == {}:
-                # print(bug_commit == {})
-                continue
-
-            fixed_files.append(m.filename)
-            # fixed files
-            fixed_file_name = "{}/{}_{}_{}".format(base_dir_fixed, str(i), commit.hash[:6], m.filename)
-            # with open(fixed_file_name, 'w') as the_file:
-            #     the_file.write(m.source_code)
-            
-            for file in bug_commit:
-                if file.split('/')[-1] not in fixed_files:
+                if bug_commit == {}:
                     continue
-                # print("\tfalallala", file, fixed_files)
 
-                latest_bug_commit_date = utc.localize(datetime.strptime("1/1/1950 00:00:00", "%d/%m/%Y %H:%M:%S"))
-                latest_bug_commit_hash = ""
-
-                for past_commit_hash in bug_commit[file]:
-                    past_commit = gitRepo.get_commit(past_commit_hash)
-                    past_commit_date = past_commit.committer_date.replace(tzinfo=utc)
-                    if past_commit_date > latest_bug_commit_date:
-                        latest_bug_commit_date = past_commit.author_date
-                        latest_bug_commit_hash = past_commit_hash
+                fixed_files.append(m.filename)
+                fixed_file_name = "{}/{}_{}_{}".format(base_dir_fixed, str(i), commit.hash[:6], m.filename)
                 
-                latest_bug_commit = gitRepo.get_commit(latest_bug_commit_hash)
-
-                for bug_m in latest_bug_commit.modifications:
-                    if bug_m.filename not in fixed_files:
+                for file in bug_commit:
+                    if file.split('/')[-1] not in fixed_files:
                         continue
+                    # print("\tfalallala", file, fixed_files)
 
-                    if bug_m.source_code == None:
-                        continue
+                    latest_bug_commit_date = utc.localize(datetime.strptime("1/1/1950 00:00:00", "%d/%m/%Y %H:%M:%S"))
+                    latest_bug_commit_hash = ""
 
-                    bug_file_name = "{}/{}_{}_{}".format(base_dir_bug, str(i), latest_bug_commit.hash[:6], bug_m.filename)
-                    with open(bug_file_name, 'w') as the_file:
-                        the_file.write(bug_m.source_code)
+                    for past_commit_hash in bug_commit[file]:
+                        past_commit = gitRepo.get_commit(past_commit_hash)
+                        past_commit_date = past_commit.committer_date.replace(tzinfo=utc)
+                        if past_commit_date > latest_bug_commit_date:
+                            latest_bug_commit_date = past_commit.author_date
+                            latest_bug_commit_hash = past_commit_hash
+                    
+                    latest_bug_commit = gitRepo.get_commit(latest_bug_commit_hash)
 
-                    with open(fixed_file_name, 'w') as the_file:
-                        the_file.write(m.source_code)
+                    for bug_m in latest_bug_commit.modifications:
+                        if bug_m.filename not in fixed_files:
+                            continue
 
-                    print("********")
-                    print(i, commit.msg.split('\n')[0])
-                    print(fixed_file_name)
-                    print(bug_file_name)
+                        if bug_m.source_code == None:
+                            continue
+
+                        bug_file_name = "{}/{}_{}_{}".format(base_dir_bug, str(i), latest_bug_commit.hash[:6], bug_m.filename)
+                        with open(bug_file_name, 'w') as the_file:
+                            the_file.write(bug_m.source_code)
+
+                        with open(fixed_file_name, 'w') as the_file:
+                            the_file.write(m.source_code)
+
+                        print("********")
+                        print(i, commit.msg) #.split('\n')[0])
+                        print(fixed_file_name)
+                        print(bug_file_name)
+            except Exception as e:
+                print(e)
+                print("Continuinf for next commits")
+
 
 if __name__ == "__main__":
     main()
