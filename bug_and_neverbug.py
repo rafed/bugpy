@@ -38,7 +38,7 @@ def main():
         os.makedirs(base_dir_not_bug)
 
     gitRepo = GitRepository(repo_path)
-    commits = RepositoryMining(repo_path, only_in_branch=repo_branch).traverse_commits()
+    # commits = RepositoryMining(repo_path, only_in_branch=repo_branch).traverse_commits()
 
     all_files = gitRepo.files()
     counter = 0
@@ -46,7 +46,9 @@ def main():
     for file in all_files:
         counter += 1
         relative_path = os.path.relpath(file, repo_path) 
-        print("[*] {}/{} {}".format(counter, total_files, relative_path))
+        # print("[*] {}/{} {}".format(counter, total_files, relative_path))
+        print(relative_path)
+
         
         if not valid_source_file(file):
             continue
@@ -57,20 +59,20 @@ def main():
 
         buggy = False
 
-        for commit in modifying_commits:
-            print(commit.hexsha)
-            if is_buggy_commit(commit.message):
-                print(commit.message)
-                buggy = True
-                break
+        # for commit in modifying_commits:
+        #     print(commit.hexsha)
+        #     if is_buggy_commit(commit.message):
+        #         print(commit.message)
+        #         buggy = True
+        #         break
 
-        file_name_to_write = "{}_{}".format(counter, os.path.basename(file))
-        if buggy:
-            file_path_to_write = os.path.join(base_dir_bug, file_name_to_write)
-            shutil.copyfile(file, file_path_to_write)
-        else:
-            file_path_to_write = os.path.join(base_dir_not_bug, file_name_to_write)
-            shutil.copyfile(file, file_path_to_write)
+        # file_name_to_write = "{}_{}".format(counter, os.path.basename(file))
+        # if buggy:
+        #     file_path_to_write = os.path.join(base_dir_bug, file_name_to_write)
+        #     shutil.copyfile(file, file_path_to_write)
+        # else:
+        #     file_path_to_write = os.path.join(base_dir_not_bug, file_name_to_write)
+        #     shutil.copyfile(file, file_path_to_write)
             
     print("All Done!")
 
