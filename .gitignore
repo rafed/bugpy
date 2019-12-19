@@ -1,6 +1,7 @@
 .vscode
 data/
 data2/
+data3/
 env/
 venv/
 .env/

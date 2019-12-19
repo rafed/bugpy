@@ -59,20 +59,20 @@ def main():
 
         buggy = False
 
-        # for commit in modifying_commits:
-        #     print(commit.hexsha)
-        #     if is_buggy_commit(commit.message):
-        #         print(commit.message)
-        #         buggy = True
-        #         break
+        for commit in modifying_commits:
+            print(commit.hexsha)
+            if is_buggy_commit(commit.message):
+                print(commit.message)
+                buggy = True
+                break
 
-        # file_name_to_write = "{}_{}".format(counter, os.path.basename(file))
-        # if buggy:
-        #     file_path_to_write = os.path.join(base_dir_bug, file_name_to_write)
-        #     shutil.copyfile(file, file_path_to_write)
-        # else:
-        #     file_path_to_write = os.path.join(base_dir_not_bug, file_name_to_write)
-        #     shutil.copyfile(file, file_path_to_write)
+        file_name_to_write = "{}_{}".format(counter, os.path.basename(file))
+        if buggy:
+            file_path_to_write = os.path.join(base_dir_bug, file_name_to_write)
+            shutil.copyfile(file, file_path_to_write)
+        else:
+            file_path_to_write = os.path.join(base_dir_not_bug, file_name_to_write)
+            shutil.copyfile(file, file_path_to_write)
             
     print("All Done!")
 
