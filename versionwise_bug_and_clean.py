@@ -81,7 +81,7 @@ def main():
             pickle.dump(bug_tracker, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     # Copy the files
-    with open('data3/maj_versions/{}.hash'.format(os.path.basename(os.path.normpath(repo_path)))) as f:
+    with open('maj_versions/{}.hash'.format(os.path.basename(os.path.normpath(repo_path)))) as f:
         major_releases = []
         for line in f.read().splitlines():
             tag,hash = line.split(',')
