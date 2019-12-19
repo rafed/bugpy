@@ -5,8 +5,10 @@ GitPython==3.0.4
 idna==2.8
 lizard==1.16.6
 PyDriller==1.9.2
+python-dateutil==2.8.1
 pytz==2019.3
 requests==2.22.0
+six==1.13.0
 smmap2==2.0.5
 typing==3.7.4.1
 urllib3==1.25.7
