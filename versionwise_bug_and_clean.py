@@ -66,7 +66,7 @@ def main():
                     for _file in bug_commit:
                         for i, _commit in enumerate(commits[:commit_index]):
                             if _commit.hash in bug_commit[_file] \
-                                and i<bug_start_index   \
+                                and i<bug_start_index:
                                 bug_start_index = i
 
                     for _commit in commits[bug_start_index:commit_index]:
